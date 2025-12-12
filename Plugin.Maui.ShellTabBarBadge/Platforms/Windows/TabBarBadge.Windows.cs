@@ -143,7 +143,7 @@ public static partial class TabBarBadge
             {
                 Background = new WinMedia.SolidColorBrush(color.ToWindowsColor()),
                 CornerRadius = new WinUI.CornerRadius(8),
-                Padding = new WinUI.Thickness(6, 2, 6, 2),
+                Padding = new WinUI.Thickness(2, 2, 2, 2),
                 Child = tb,
                 Tag = tag
             };

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Handlers.Compatibility;
+﻿using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Platform.Compatibility;
 using UIKit;
 
@@ -21,20 +19,24 @@ public class TabBarBadgeRenderer : ShellRenderer
         => new BadgeShellTabBarAppearanceTracker();
 }
 
-// Tracks UITabBarController and draws dot/label badges per tab
+// Tracks current UITabBarController
 internal class BadgeShellTabBarAppearanceTracker : ShellTabBarAppearanceTracker
 {
-    static UITabBarController? s_controller;
+    internal static UITabBarController? s_controller { get; private set; }
 
     public override void UpdateLayout(UITabBarController controller)
     {
         base.UpdateLayout(controller);
+
         s_controller = controller; // keep latest controller
     }
+}
 
-    static UIView? GetTabButton(int tabIndex)
+internal static class SharedExtensions
+{
+    static UIView? GetTabButton(this UITabBarController controller, int tabIndex)
     {
-        var tabBar = s_controller?.TabBar;
+        var tabBar = controller?.TabBar;
         if (tabBar == null) return null;
 
         var buttons = tabBar.Subviews
@@ -46,6 +48,7 @@ internal class BadgeShellTabBarAppearanceTracker : ShellTabBarAppearanceTracker
     }
 
     internal static void SetBadge(
+        this UITabBarController controller,
         int tabIndex,
         bool isDot,
         string? text,
@@ -57,7 +60,7 @@ internal class BadgeShellTabBarAppearanceTracker : ShellTabBarAppearanceTracker
         VerticalAlignment vertical,
         double fontSize)
     {
-        var button = GetTabButton(tabIndex);
+        var button = controller.GetTabButton(tabIndex);
         if (button == null) return;
 
         var tag = 90000 + tabIndex; // unique per tab
@@ -91,7 +94,7 @@ internal class BadgeShellTabBarAppearanceTracker : ShellTabBarAppearanceTracker
 
         // ---------- Text / Number Badge ----------
         const float minHeight = 16f;
-        const float sidePadding = 6f;
+        const float sidePadding = 4f;
 
         var container = new UIView { Tag = tag };
         container.BackgroundColor = bg ?? UIColor.Red;
@@ -118,6 +121,7 @@ internal class BadgeShellTabBarAppearanceTracker : ShellTabBarAppearanceTracker
             label.BottomAnchor.ConstraintEqualTo(container.BottomAnchor, -1),
             label.LeadingAnchor.ConstraintEqualTo(container.LeadingAnchor, sidePadding),
             label.TrailingAnchor.ConstraintEqualTo(container.TrailingAnchor, -sidePadding),
+            container.WidthAnchor.ConstraintGreaterThanOrEqualTo(minHeight),
             container.HeightAnchor.ConstraintGreaterThanOrEqualTo(minHeight),
         });
 

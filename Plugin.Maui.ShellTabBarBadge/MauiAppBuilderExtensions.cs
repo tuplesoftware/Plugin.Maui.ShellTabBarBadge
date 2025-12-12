@@ -38,11 +38,14 @@ public static class MauiAppBuilderExtensions
         TabBarBadge.Configure(options);
 
 #if IOS || MACCATALYST
+        if (!options.IsTabbedPage)
+        {
             builder.ConfigureMauiHandlers(handlers =>
             {
                 // Register our custom renderer for Shell
                 handlers.AddHandler<Shell, TabBarBadgeRenderer>();
             });
+        }
 #endif
 
         return builder;

@@ -2,7 +2,6 @@
 using Android.Widget;
 using AndroidX.AppCompat.Widget;
 using Google.Android.Material.BottomNavigation;
-using Microsoft.Maui.Controls;
 using Microsoft.Maui.Platform;
 
 namespace Plugin.Maui.ShellTabBarBadge;
@@ -17,13 +16,12 @@ public static partial class TabBarBadge
         VerticalAlignment vertical,
         double fontSize)
     {
-        var shell = Application.Current?.Windows.FirstOrDefault()?.Page as Shell;
-        if (shell == null) return;
+        // TODO: move common code from the show/hide into one method (like GetTabButton())
+        var viewGroup = FindHandler()?.PlatformView as ViewGroup;
+        if (_options.IsTabbedPage) viewGroup = viewGroup?.Parent?.Parent as ViewGroup;
+        if (viewGroup == null) return;
 
-        var handler = shell.Handler?.PlatformView as ViewGroup;
-        if (handler == null) return;
-
-        var bottomNav = FindBottomNavigationView(handler);
+        var bottomNav = FindBottomNavigationView(viewGroup);
         if (bottomNav == null) return;
 
         if (tabIndex < 0 || tabIndex >= bottomNav.Menu.Size())
@@ -178,13 +176,11 @@ public static partial class TabBarBadge
 
     static partial void HideImpl(int tabIndex)
     {
-        var shell = Application.Current?.Windows.FirstOrDefault()?.Page as Shell;
-        if (shell == null) return;
+        var viewGroup = FindHandler()?.PlatformView as ViewGroup;
+        if (_options.IsTabbedPage) viewGroup = viewGroup?.Parent?.Parent as ViewGroup;
+        if (viewGroup == null) return;
 
-        var handler = shell.Handler?.PlatformView as ViewGroup;
-        if (handler == null) return;
-
-        var bottomNav = FindBottomNavigationView(handler);
+        var bottomNav = FindBottomNavigationView(viewGroup);
         if (bottomNav == null) return;
 
         var itemContainer = FindTabItemContainer(bottomNav);

@@ -105,4 +105,15 @@ public static partial class TabBarBadge
         double fontSize);
 
     static partial void HideImpl(int tabIndex);
+    
+    private static IViewHandler? FindHandler()
+    {
+        var mainPage = Application.Current?.Windows.FirstOrDefault()?.Page;
+
+        return _options.IsTabbedPage ?
+            (mainPage as TabbedPage)?.Handler :
+            (mainPage as Shell)?.Handler;
+        // skipped this way, to proper following the page type flag we did set
+        // return mainPage is Shell or TabbedPage ? mainPage.Handler : null;
+    }
 }

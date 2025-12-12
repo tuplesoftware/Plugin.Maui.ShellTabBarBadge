@@ -60,4 +60,13 @@ public class BadgeOptions
     /// Default is <c>0</c>.
     /// </summary>
     public int AnchorY { get; set; } = 0;
+
+    /// <summary>
+    /// The default page with tab control is Shell.
+    /// <para/>
+    /// But there is a partial Tabbed page support as Main page. Set this property to <c>true</c> to try.
+    /// <para/>
+    /// Default is <c>false</c>.
+    /// </summary>
+    public bool IsTabbedPage { get; set; } = false;
 }
