@@ -106,7 +106,7 @@ public static partial class TabBarBadge
 
     static partial void HideImpl(int tabIndex);
     
-    private static IViewHandler? FindHandler()
+    static IViewHandler? FindHandler()
     {
         var mainPage = Application.Current?.Windows.FirstOrDefault()?.Page;
 
