@@ -1,12 +1,11 @@
-﻿using Microsoft.Maui.Graphics;
-using Microsoft.Maui.Platform;
+﻿using Microsoft.Maui.Platform;
 using UIKit;
 
 namespace Plugin.Maui.ShellTabBarBadge;
 
 /// <summary>
 /// Provides a cross-platform API for showing and managing badges 
-/// on .NET MAUI Shell tab bar items.
+/// on .NET MAUI Shell & (main) TabbedPage tab bar items.
 /// </summary>
 public static partial class TabBarBadge
 {
@@ -22,7 +21,7 @@ public static partial class TabBarBadge
         VerticalAlignment vertical,
         double fontSize)
     {
-        BadgeShellTabBarAppearanceTracker.SetBadge(
+        CurrentTabBarController?.SetBadge(
             tabIndex,
             isDot,
             text,
@@ -37,8 +36,12 @@ public static partial class TabBarBadge
 
     static partial void HideImpl(int tabIndex)
     {
-        BadgeShellTabBarAppearanceTracker.SetBadge(
+        CurrentTabBarController?.SetBadge(
             tabIndex, false, null, null, null, 0, 0,
             HorizontalAlignment.Right, VerticalAlignment.Top, 11);
     }
+
+    static UITabBarController? CurrentTabBarController => _options.IsTabbedPage
+        ? FindHandler() as UITabBarController
+        : BadgeShellTabBarAppearanceTracker.s_controller;
 }
